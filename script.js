@@ -111,8 +111,10 @@ fetch(CORS_PROXY + encodeURIComponent(API_URL))
      return;
    }
 
-   const filtered = countriesData.filter((country) =>
-     country.name?.common.toLowerCase().includes(value)
+   const filtered = countriesData.filter((country) =>{
+        // return country.name?.common.toLowerCase() != value
+        console.log(country)
+    }
    );
 
    displayCountries(filtered);
