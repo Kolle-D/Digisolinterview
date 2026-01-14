@@ -59,7 +59,7 @@ fetch(CORS_PROXY + encodeURIComponent(API_URL))
 
       card.innerHTML = `
         <img src="${flag}" alt="${name} flag">
-        <h3>${name}</h3>
+        <h3>${country.name || "N/A"}</h3>
         <p><strong>Capital:</strong> ${capital}</p>
         <p><strong>Languages:</strong> ${languages}</p>
         <p><strong>Population:</strong> ${population}</p>
@@ -75,3 +75,45 @@ fetch(CORS_PROXY + encodeURIComponent(API_URL))
     console.error("Fetch error:", error);
     container.innerHTML = "<p>Failed to load country data.</p>";
   });
+
+  const searchInput = document.getElementById("search");
+
+  let countriesData = [];
+
+  fetch("https://www.apicountries.com/countries")
+    .then((res) => res.json())
+    .then((data) => {
+      countriesData = data;
+      displayCountries(data);
+    });
+
+  function displayCountries(data) {
+    container.innerHTML = "";
+    data.forEach((country) => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+      <img src="${country.flags?.png}">
+      <h3>${country.name.common}</h3>
+      <p>Population: ${country.population.toLocaleString()}</p>
+    `;
+
+      container.appendChild(card);
+    });
+  }
+
+ searchInput.addEventListener("change", (e) => {
+   const value = e.target.value.trim().toLowerCase();
+
+   if (!value) {
+     displayCountries(countriesData);
+     return;
+   }
+
+   const filtered = countriesData.filter((country) =>
+     country.name?.common.toLowerCase().includes(value)
+   );
+
+   displayCountries(filtered);
+ });
