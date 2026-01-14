@@ -21,9 +21,34 @@ fetch(CORS_PROXY + encodeURIComponent(API_URL))
       const population = country.population
         ? country.population.toLocaleString()
         : "N/A";
-      const languages = country.languages
-        ? Object.values(country.languages).join(", ")
-        : "N/A";
+    //   const languages = country.languages
+    //     ? Object.values(country.languages).join(", ")
+    //     : "N/A";
+
+    let languages = "N/A";
+    if (country.languages) {
+      if (Array.isArray(country.languages)) {
+        languages = country.languages
+          .map((lang) => lang.name || Object.values(lang).join(", "))
+          .join(", ");
+      } else {
+        languages = Object.entries(country.languages)
+          .map(([key, value]) => {
+            if (typeof value === "string") return value;
+            if (typeof value === "object")
+              return value.name || Object.values(value).join(", ");
+            return "";
+          })
+          .join(", ");
+      }
+    }
+
+    // const languages = country.languages
+    //   ? Object.entries(country.languages)
+    //       .map(([code, name]) => name)
+    //       .join(", ")
+    //   : "N/A";
+
       const currencies = country.currencies
         ? Object.values(country.currencies)
             .map((c) => c.name)
